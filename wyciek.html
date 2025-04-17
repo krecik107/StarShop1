@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyciek</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        .server-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            max-width: 300px;
+            margin: 0 auto 30px;
+        }
+        .server-button {
+            padding: 12px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        .server-button:hover {
+            background-color: #45a049;
+        }
+        .form-container {
+            display: none;
+            max-width: 300px;
+            margin: 0 auto;
+            text-align: left;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .submit-button {
+            width: 100%;
+            padding: 12px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .submit-button:hover {
+            background-color: #45a049;
+        }
+        .selected {
+            background-color: #2E7D32;
+        }
+    </style>
+</head>
+<body>
+    <h1>Z którego chcesz wyciek</h1>
+    <div class="server-container">
+        <button class="server-button" onclick="selectServer(this, 'rapy.pl')">rapy.pl</button>
+        <button class="server-button" onclick="selectServer(this, 'xdream')">xdream</button>
+        <button class="server-button" onclick="selectServer(this, 'prismamc')">prismamc</button>
+    </div>
+    
+    <div class="form-container" id="formContainer">
+        <label for="discordName">Twoja nazwa discord:</label>
+        <input type="text" id="discordName" name="discordName" required>
+        <button class="submit-button" onclick="submitOrder()">Złóż zamówienie</button>
+    </div>
+
+    <script>
+        let selectedServer = null;
+        
+        function selectServer(button, server) {
+            // Remove selected class from all buttons
+            document.querySelectorAll('.server-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked button
+            button.classList.add('selected');
+            selectedServer = server;
+            
+            // Show the form
+            document.getElementById('formContainer').style.display = 'block';
+        }
+        
+        function submitOrder() {
+            const discordName = document.getElementById('discordName').value.trim();
+            
+            if (!discordName) {
+                alert('Proszę podać nazwę Discord');
+                return;
+            }
+            
+            if (!selectedServer) {
+                alert('Proszę wybrać serwer');
+                return;
+            }
+            
+            // Tutaj należy zastąpić URL swoim webhookiem Discord
+            const webhookUrl = 'https://discord.com/api/webhooks/1362405063024447508/SRuHBcZrGUYFJjCIvJEhmT1ILyoMOebFH6yd9XC4uAKGJiI89BpGdF4Ucd9cYkDirpza';
+            
+            const message = {
+                content: `Nowe zamówienie wycieku!\nWyciek z serwera: ${selectedServer}\nNazwa użytkownika discord: ${discordName}`
+            };
+            
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(message),
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Zamówienie zostało złożone!');
+                } else {
+                    alert('Wystąpił błąd podczas składania zamówienia.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Wystąpił błąd podczas składania zamówienia.');
+            });
+        }
+    </script>
+</body>
+</html>
